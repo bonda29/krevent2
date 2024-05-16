@@ -11,6 +11,7 @@ import org.example.krevent.models.enums.TokenType;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "tokens")
 public class Token extends BaseEntity {
     @Column(unique = true)
     public String token;

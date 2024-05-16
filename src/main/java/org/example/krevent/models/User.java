@@ -1,14 +1,18 @@
 package org.example.krevent.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.example.krevent.models.abstracts.BaseEntity;
 import org.example.krevent.models.enums.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -16,24 +20,42 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "_user")
+@Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
-
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
 
+    @Email
+    @Column(name = "email")
     private String email;
 
+    @Column(name = "password")
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
+
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    private Set<EventSeat> eventSeats = new LinkedHashSet<>();
+
+    @Column(name = "date_of_creation")
+    private LocalDateTime dateOfCreation;
+
+    @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
+    private boolean isEnabled;
+
+
+    @PrePersist
+    protected void onCreate() {
+        dateOfCreation = LocalDateTime.now();
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -42,12 +64,12 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        return this.password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.email;
     }
 
     @Override
@@ -67,6 +89,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 }
