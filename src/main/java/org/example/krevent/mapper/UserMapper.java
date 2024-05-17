@@ -1,7 +1,7 @@
 package org.example.krevent.mapper;
 
-import org.example.krevent.models.EventSeat;
 import org.example.krevent.models.User;
+import org.example.krevent.models.abstracts.BaseEntity;
 import org.example.krevent.payload.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
@@ -17,8 +17,8 @@ public class UserMapper {
         modelMapper.addMappings(new PropertyMap<User, UserDto>() {
             @Override
             protected void configure() {
-                map().setEventSeatIds(source.getEventSeats().stream()
-                        .map(EventSeat::getId)
+                map().setTicketIds(source.getTickets().stream()
+                        .map(BaseEntity::getId)
                         .collect(Collectors.toSet()));
             }
         });

@@ -42,15 +42,14 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Token> tokens;
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
-    private Set<EventSeat> eventSeats = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Ticket> tickets = new LinkedHashSet<>();
 
     @Column(name = "date_of_creation")
     private LocalDateTime dateOfCreation;
 
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
     private boolean isEnabled;
-
 
     @PrePersist
     protected void onCreate() {

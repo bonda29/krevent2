@@ -3,7 +3,6 @@ package org.example.krevent.payload.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
-import lombok.Setter;
 import lombok.Value;
 import org.example.krevent.models.User;
 import org.example.krevent.models.enums.Role;
@@ -17,7 +16,6 @@ import java.util.Set;
  */
 @Data
 public class UserDto implements Serializable {
-    @JsonProperty("id")
     Long id;
 
     @JsonProperty("first_name")
@@ -25,16 +23,12 @@ public class UserDto implements Serializable {
 
     @JsonProperty("last_name")
     String lastName;
-
-    @JsonProperty("email")
     @Email
     String email;
-
-    @JsonProperty("role")
     Role role;
 
-    @JsonProperty("event_seats")
-    Set<Long> eventSeatIds;
+    @JsonProperty("ticket_ids")
+    Set<Long> ticketIds;
 
     @JsonProperty("date_of_creation")
     LocalDateTime dateOfCreation;

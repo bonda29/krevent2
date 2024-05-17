@@ -24,14 +24,12 @@ public class Event extends BaseEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "seat_view", columnDefinition = "LONGTEXT")
-    private String seatView;
-
     @Column(name = "date")
     private LocalDateTime date;
 
-    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<EventSeat> eventSeats = new LinkedHashSet<>();
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "event_hall_id", nullable = false)
+    private EventHall eventHall;
 
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "event_image_urls", joinColumns = @JoinColumn(name = "event_id"))
