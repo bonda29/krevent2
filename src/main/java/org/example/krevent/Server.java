@@ -23,7 +23,7 @@ public class Server {
     @Bean
     public CommandLineRunner commandLineRunner(AuthenticationService authenticationService, UserRepository userRepository) {
         return args -> {
-            if (!userRepository.existsByEmail("admin@mail.com")) {
+            if (userRepository.existsByEmail("admin@mail.com")) {
                 var admin = RegisterRequest.builder()
                         .firstName("Admin")
                         .lastName("Admin")
@@ -33,7 +33,7 @@ public class Server {
                         .build();
                 System.out.println("Admin token: " + authenticationService.register(admin).getAccessToken());
             }
-            if (!userRepository.existsByEmail("manager@mail.com")) {
+            if (userRepository.existsByEmail("manager@mail.com")) {
                 var manager = RegisterRequest.builder()
                         .firstName("Manager")
                         .lastName("Manager")
