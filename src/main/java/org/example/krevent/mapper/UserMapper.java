@@ -5,11 +5,13 @@ import org.example.krevent.models.abstracts.BaseEntity;
 import org.example.krevent.payload.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.Mapping;
 
 import java.util.stream.Collectors;
 
+@Component
 public class UserMapper {
-
     private final ModelMapper modelMapper;
 
     public UserMapper() {

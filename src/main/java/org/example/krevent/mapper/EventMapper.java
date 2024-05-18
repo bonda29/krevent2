@@ -4,7 +4,9 @@ import org.example.krevent.models.Event;
 import org.example.krevent.payload.dto.EventDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EventMapper {
     private final ModelMapper modelMapper;
 

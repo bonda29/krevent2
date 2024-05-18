@@ -6,9 +6,14 @@ import org.example.krevent.models.HallSeat;
 import org.example.krevent.payload.dto.EventHallDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.List;
 
 import static java.util.stream.Collectors.toSet;
 
+@Component
 public class EventHallMapper {
     private final ModelMapper modelMapper;
 
@@ -31,6 +36,12 @@ public class EventHallMapper {
 
     public EventHallDto toDto(EventHall entity) {
         return modelMapper.map(entity, EventHallDto.class);
+    }
+
+    public List<EventHallDto> toDto(Collection<EventHall> entities) {
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
     }
 
 }

@@ -4,7 +4,9 @@ import org.example.krevent.models.Ticket;
 import org.example.krevent.payload.dto.TicketDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
+import org.springframework.stereotype.Component;
 
+@Component
 public class TicketMapper {
     private final ModelMapper modelMapper;
 
