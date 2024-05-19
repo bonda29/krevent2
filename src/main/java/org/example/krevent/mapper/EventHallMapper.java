@@ -23,13 +23,14 @@ public class EventHallMapper {
         modelMapper.addMappings(new PropertyMap<EventHall, EventHallDto>() {
             @Override
             protected void configure() {
-                map().setEventIds(source.getEvents().stream()
-                        .map(Event::getId)
-                        .collect(toSet()));
-
-                map().setHallSeatIds(source.getHallSeats().stream()
-                        .map(HallSeat::getId)
-                        .collect(toSet()));
+                if (source.getEvents() != null)
+                    map().setEventIds(source.getEvents().stream()
+                            .map(Event::getId)
+                            .collect(toSet()));
+                if (source.getHallSeats() != null)
+                    map().setHallSeatIds(source.getHallSeats().stream()
+                            .map(HallSeat::getId)
+                            .collect(toSet()));
             }
         });
     }

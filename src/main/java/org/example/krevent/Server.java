@@ -1,16 +1,8 @@
 package org.example.krevent;
 
-import org.example.krevent.auth.AuthenticationService;
-import org.example.krevent.payload.request.RegisterRequest;
-import org.example.krevent.repository.UserRepository;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
-
-import static org.example.krevent.models.enums.Role.ADMIN;
-import static org.example.krevent.models.enums.Role.MANAGER;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
@@ -20,7 +12,7 @@ public class Server {
         SpringApplication.run(Server.class, args);
     }
 
-    @Bean
+/*    @Bean
     public CommandLineRunner commandLineRunner(AuthenticationService authenticationService, UserRepository userRepository) {
         return args -> {
             if (userRepository.existsByEmail("admin@mail.com")) {
@@ -44,5 +36,5 @@ public class Server {
                 System.out.println("Manager token: " + authenticationService.register(manager).getAccessToken());
             }
         };
-    }
+    }*/
 }

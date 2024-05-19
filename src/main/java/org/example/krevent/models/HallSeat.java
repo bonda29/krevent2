@@ -11,9 +11,9 @@ import org.example.krevent.models.enums.SeatType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "event_seats")
+@Table(name = "hall_seats")
 public class HallSeat extends BaseEntity {
-    @Column(name = "row")
+    @Column(name = "_row") // row is a reserved keyword in SQL, so we use _row
     private String row;
 
     @Column(name = "seat")

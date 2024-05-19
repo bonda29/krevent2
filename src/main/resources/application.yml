@@ -31,3 +31,5 @@ management:
 
 stripe:
     secret-key: sk_test_51O5nGIJBrDD3W9P8k1Oqx58JvYMqX3kCLDUGFnf7xV5lwtUmpXVsFlXUfiZeCOphHLxFavnNMqAmQbdVXZu1x9Ux00mdkyiyak
+    price10: price_1PHpRFJBrDD3W9P8xU8VBApF
+    price15: price_1PHpQGJBrDD3W9P8gXxFB30e

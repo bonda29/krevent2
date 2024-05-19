@@ -1,5 +1,6 @@
 package org.example.krevent.payload.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
 import org.example.krevent.models.enums.SeatType;
@@ -10,6 +11,7 @@ public class HallSeatCreationRequest {
     String row;
     Integer seat;
     SeatType type;
+    @JsonProperty("event_hall_id")
     Long eventHallId;
 
 }

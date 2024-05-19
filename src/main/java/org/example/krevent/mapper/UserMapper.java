@@ -6,7 +6,6 @@ import org.example.krevent.payload.dto.UserDto;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.Mapping;
 
 import java.util.stream.Collectors;
 
@@ -19,9 +18,10 @@ public class UserMapper {
         modelMapper.addMappings(new PropertyMap<User, UserDto>() {
             @Override
             protected void configure() {
-                map().setTicketIds(source.getTickets().stream()
-                        .map(BaseEntity::getId)
-                        .collect(Collectors.toSet()));
+                if (source.getTickets() != null)
+                    map().setTicketIds(source.getTickets().stream()
+                            .map(BaseEntity::getId)
+                            .collect(Collectors.toSet()));
             }
         });
     }

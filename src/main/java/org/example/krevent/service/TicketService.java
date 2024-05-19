@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.stripe.param.checkout.SessionCreateParams.Mode.PAYMENT;
 import static org.example.krevent.util.RepositoryUtil.findById;
@@ -29,11 +30,12 @@ public class TicketService {
     private final UserRepository userRepository;
     private final StripeService stripeService;
     private final TicketMapper ticketMapper;
-    private final String price10 = "price_1PHpRFJBrDD3W9P8xU8VBApF";
-    private final String price15 = "price_1PHpQGJBrDD3W9P8gXxFB30e";
 
-    @Value("${stripe.secret-key}")
-    private String stripeSecretKey;
+    @Value("${stripe.price10}")
+    private String price10;
+
+    @Value("${stripe.price15}")
+    private String price15;
 
     public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
         User user = findById(userRepository, data.getUserId());
@@ -74,7 +76,7 @@ public class TicketService {
                     .setCustomer(customer.getId())
                     .addAllLineItem(lineItems)
                     .setMode(PAYMENT)
-                    .setSuccessUrl("http://localhost:3000/success")
+                    .setSuccessUrl("http://localhost:3000/success" + "?session=" + UUID.randomUUID())
                     .setCancelUrl("http://localhost:3000/cancel")
                     .build();
             Session session = Session.create(params);
@@ -84,6 +86,5 @@ public class TicketService {
         }
 
     }
-
 
 }

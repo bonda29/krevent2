@@ -54,6 +54,7 @@ public class HallSeatService {
         }
 
         hallSeat.setType(type);
+        hallSeat.setPrice(type.getPrice());
         hallSeat = hallSeatRepository.save(hallSeat);
         return hallSeatMapper.toDto(hallSeat);
     }
