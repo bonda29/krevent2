@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import lombok.*;
 import org.example.krevent.models.abstracts.BaseEntity;
 import org.example.krevent.models.enums.Role;
+import org.example.krevent.util.DateUtil;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -53,7 +54,7 @@ public class User extends BaseEntity implements UserDetails {
 
     @PrePersist
     protected void onCreate() {
-        dateOfCreation = LocalDateTime.now();
+        dateOfCreation = DateUtil.now();
     }
 
     @Override

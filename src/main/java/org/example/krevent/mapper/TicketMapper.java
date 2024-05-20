@@ -6,6 +6,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.PropertyMap;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+import java.util.List;
+
 @Component
 public class TicketMapper {
     private final ModelMapper modelMapper;
@@ -26,4 +29,9 @@ public class TicketMapper {
         return modelMapper.map(entity, TicketDto.class);
     }
 
+    public List<TicketDto> toDto(Collection<Ticket> entities) {
+        return entities.stream()
+                .map(this::toDto)
+                .toList();
+    }
 }

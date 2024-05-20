@@ -1,35 +1,35 @@
-package org.example.krevent.service;
+package org.example.krevent.service.ticket;
 
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import lombok.RequiredArgsConstructor;
-import org.example.krevent.mapper.TicketMapper;
 import org.example.krevent.models.HallSeat;
+import org.example.krevent.models.Transaction;
 import org.example.krevent.models.User;
 import org.example.krevent.payload.request.TicketPurchaseRequest;
 import org.example.krevent.repository.HallSeatRepository;
-import org.example.krevent.repository.TicketRepository;
+import org.example.krevent.repository.TransactionRepository;
 import org.example.krevent.repository.UserRepository;
+import org.example.krevent.service.StripeService;
+import org.example.krevent.util.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static com.stripe.param.checkout.SessionCreateParams.Mode.PAYMENT;
+import static java.util.stream.Collectors.toSet;
+import static org.example.krevent.models.enums.TransactionStatus.PENDING;
 import static org.example.krevent.util.RepositoryUtil.findById;
 
 @Service
 @RequiredArgsConstructor
-public class TicketService {
+public class PurchaseTicketService {
+    private final TransactionRepository transactionRepository;
     private final HallSeatRepository hallSeatRepository;
-    private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
     private final StripeService stripeService;
-    private final TicketMapper ticketMapper;
 
     @Value("${stripe.price10}")
     private String price10;
@@ -39,52 +39,72 @@ public class TicketService {
 
     public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
         User user = findById(userRepository, data.getUserId());
-        List<HallSeat> hallSeat = data.getHallSeatIds().stream()
+        Set<HallSeat> hallSeat = data.getHallSeatIds().stream()
                 .map(id -> findById(hallSeatRepository, id))
-                .toList();
+                .collect(toSet());
 
         var customer = stripeService.getOrCreateCustomer(user.getEmail(),
                 user.getFirstName() + " " + user.getLastName());
 
-        long numberOfSeatsPrice10 = 0;
-        long numberOfSeatsPrice15 = 0;
-
+        long number10 = 0, number15 = 0;
         for (HallSeat seat : hallSeat) {
+            if (seat.isBooked()) {
+                //todo: make custom exception
+                throw new RuntimeException("Seat is already booked");
+            }
             if (seat.getPrice() == 10) {
-                numberOfSeatsPrice10++;
+                number10++;
             } else if (seat.getPrice() == 15) {
-                numberOfSeatsPrice15++;
+                number15++;
             }
         }
 
+        String sessionId = UUID.randomUUID().toString();
+        Transaction transaction = Transaction.builder()
+                .user(user)
+                .hallSeats(hallSeat)
+                .sessionId(sessionId)
+                .status(PENDING)
+                .timeOfCreation(DateUtil.now())
+                .build();
+
+        transactionRepository.save(transaction);
+
+        String paymentUrl = getPaymentUrl(customer.getId(), number10, number15, sessionId);
+
+        return Map.of("url", paymentUrl);
+    }
+
+    private String getPaymentUrl(String customerId, long number10, long number15, String sessionId) {
         List<LineItem> lineItems = new ArrayList<>();
-        if (numberOfSeatsPrice10 > 0) {
+        if (number10 > 0) {
             lineItems.add(LineItem.builder()
                     .setPrice(price10)
-                    .setQuantity(numberOfSeatsPrice10)
+                    .setQuantity(number10)
                     .build());
         }
-        if (numberOfSeatsPrice15 > 0) {
+        if (number15 > 0) {
             lineItems.add(LineItem.builder()
                     .setPrice(price15)
-                    .setQuantity(numberOfSeatsPrice15)
+                    .setQuantity(number15)
                     .build());
         }
 
         try {
             SessionCreateParams params = SessionCreateParams.builder()
-                    .setCustomer(customer.getId())
+                    .setCustomer(customerId)
                     .addAllLineItem(lineItems)
                     .setMode(PAYMENT)
-                    .setSuccessUrl("http://localhost:3000/success" + "?session=" + UUID.randomUUID())
-                    .setCancelUrl("http://localhost:3000/cancel")
+                    .setSuccessUrl("http://localhost:8080/api/v1/tickets/success?sessionId=" + sessionId)
+                    .setCancelUrl("http://localhost:8080/api/v1/tickets/cancel?sessionId=" + sessionId)
                     .build();
             Session session = Session.create(params);
-            return Map.of("url", session.getUrl());
+
+            return session.getUrl();
         } catch (Exception e) {
+            //todo: make custom exception
             throw new RuntimeException("Error while creating Stripe session", e);
         }
-
     }
 
 }
