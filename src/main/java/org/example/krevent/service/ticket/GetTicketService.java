@@ -58,6 +58,7 @@ public class GetTicketService {
         Map<String, Object> ticketData = Map.of(
                 "Name", user.getFirstName() + " " + user.getLastName(),
                 "email", user.getEmail(),
+                "type", hallSeat.getType(),
                 "seat", "row " + hallSeat.getRow() + " seat " + hallSeat.getSeat(),
                 "price", hallSeat.getPrice()
         );
