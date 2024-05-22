@@ -11,11 +11,11 @@ import java.util.Objects;
 import static io.nayuki.qrcodegen.QrCode.Ecc.LOW;
 
 public class QrCodeUtil {
-    private static BufferedImage toImage(QrCode qr) {
+    public static BufferedImage toImage(QrCode qr) {
         return toImage(qr, 10, 4, 0xFFFFFF, 0x000000);
     }
 
-    private static BufferedImage toImage(QrCode qr, int scale, int border, int lightColor, int darkColor) {
+    public static BufferedImage toImage(QrCode qr, int scale, int border, int lightColor, int darkColor) {
         Objects.requireNonNull(qr);
         if (scale <= 0 || border < 0)
             throw new IllegalArgumentException("Value out of range");
@@ -32,12 +32,4 @@ public class QrCodeUtil {
         return result;
     }
 
-    public static String createQrCode(String imageName, String text) throws IOException {
-        QrCode qr = QrCode.encodeText(text, LOW);  // Make the QR Code symbol
-        BufferedImage img = toImage(qr);          // Convert to bitmap image
-        File imgFile = new File("src/main/resources/static/" + imageName + ".png");   // Filepath for output
-        ImageIO.write(img, "png", imgFile); // Write image to file
-
-        return "http://localhost:8080/" + imageName + ".png";
-    }
 }

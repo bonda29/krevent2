@@ -1,6 +1,7 @@
 package org.example.krevent.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.krevent.exception.HallSeatBookedException;
 import org.example.krevent.mapper.HallSeatMapper;
 import org.example.krevent.models.EventHall;
 import org.example.krevent.models.HallSeat;
@@ -47,8 +48,7 @@ public class HallSeatService {
         HallSeat hallSeat = findById(hallSeatRepository, id);
 
         if (hallSeat.isBooked()) {
-            //todo: throw custom exception
-            throw new IllegalStateException("Cannot change type of booked seat");
+            throw new HallSeatBookedException("Cannot change the type of already booked seat");
         } else if (hallSeat.getType() == type) {
             return hallSeatMapper.toDto(hallSeat);
         }
@@ -64,7 +64,7 @@ public class HallSeatService {
         HallSeat hallSeat = findById(hallSeatRepository, id);
 
         if (hallSeat.isBooked()) {
-            throw new IllegalStateException("Cannot change price of booked seat");
+            throw new HallSeatBookedException("Cannot change the price of already booked seat");
         } else if (hallSeat.getPrice() == price) {
             return hallSeatMapper.toDto(hallSeat);
         }

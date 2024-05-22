@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "events")
-//todo: add Room or Hall to the event instead of seatView
 public class Event extends BaseEntity {
     @Column(name = "name")
     private String name;

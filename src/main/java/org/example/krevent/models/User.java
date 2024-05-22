@@ -50,7 +50,7 @@ public class User extends BaseEntity implements UserDetails {
     private LocalDateTime dateOfCreation;
 
     @Column(name = "is_enabled", nullable = false, columnDefinition = "boolean default true")
-    private boolean isEnabled = true; // always true, todo: implement verification
+    private boolean isEnabled = true;
 
     @PrePersist
     protected void onCreate() {
@@ -89,6 +89,6 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.isEnabled;
     }
 }

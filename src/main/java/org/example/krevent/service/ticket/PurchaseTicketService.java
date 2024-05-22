@@ -4,6 +4,7 @@ import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import lombok.RequiredArgsConstructor;
+import org.example.krevent.exception.HallSeatBookedException;
 import org.example.krevent.models.HallSeat;
 import org.example.krevent.models.Transaction;
 import org.example.krevent.models.User;
@@ -39,7 +40,7 @@ public class PurchaseTicketService {
 
     public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
         User user = findById(userRepository, data.getUserId());
-        Set<HallSeat> hallSeat = data.getHallSeatIds().stream()
+        Set<HallSeat> hallSeats = data.getHallSeatIds().stream()
                 .map(id -> findById(hallSeatRepository, id))
                 .collect(toSet());
 
@@ -47,10 +48,9 @@ public class PurchaseTicketService {
                 user.getFirstName() + " " + user.getLastName());
 
         long number10 = 0, number15 = 0;
-        for (HallSeat seat : hallSeat) {
+        for (HallSeat seat : hallSeats) {
             if (seat.isBooked()) {
-                //todo: make custom exception
-                throw new RuntimeException("Seat is already booked");
+                throw new HallSeatBookedException("Seat is already booked");
             }
             if (seat.getPrice() == 10) {
                 number10++;
@@ -62,7 +62,7 @@ public class PurchaseTicketService {
         String sessionId = UUID.randomUUID().toString();
         Transaction transaction = Transaction.builder()
                 .user(user)
-                .hallSeats(hallSeat)
+                .hallSeats(hallSeats)
                 .sessionId(sessionId)
                 .status(PENDING)
                 .timeOfCreation(DateUtil.now())
@@ -102,7 +102,6 @@ public class PurchaseTicketService {
 
             return session.getUrl();
         } catch (Exception e) {
-            //todo: make custom exception
             throw new RuntimeException("Error while creating Stripe session", e);
         }
     }

@@ -1,6 +1,7 @@
 package org.example.krevent.service.ticket;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.example.krevent.mapper.TicketMapper;
 import org.example.krevent.models.HallSeat;
@@ -19,7 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static org.example.krevent.util.QrCodeUtil.createQrCode;
+import static org.example.krevent.models.enums.TransactionStatus.FINISHED;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class GetTicketService {
     private final TransactionRepository transactionRepository;
     private final HallSeatRepository hallSeatRepository;
     private final TicketRepository ticketRepository;
+    private final QrCodeService qrCodeService;
     private final TicketMapper ticketMapper;
 
 
@@ -47,6 +49,7 @@ public class GetTicketService {
         }
 
         hallSeatRepository.saveAll(updatedHallSeats);
+        transaction.setStatus(FINISHED);
 
         return ticketMapper.toDto(tickets);
     }
@@ -59,11 +62,11 @@ public class GetTicketService {
                 "price", hallSeat.getPrice()
         );
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String json = gson.toJson(ticketData);
-        String qrCodeImage;
+        String qrCodeUrl;
         try {
-            qrCodeImage = createQrCode(UUID.randomUUID().toString(), json);
+            qrCodeUrl = qrCodeService.createQrCode(UUID.randomUUID().toString(), json);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +75,7 @@ public class GetTicketService {
                 .user(user)
                 .hallSeat(hallSeat)
                 .price(hallSeat.getPrice())
-                .qrCodeImage(qrCodeImage)
+                .qrCodeImage(qrCodeUrl)
                 .build();
 
         return ticketRepository.save(ticket);
