@@ -1,6 +1,7 @@
 package org.example.krevent.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,13 +16,14 @@ import java.nio.file.Paths;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/images")
+@RequestMapping("/qr-codes")
 public class ImageController {
-    private static final String IMAGES_DIR = "src/main/resources/images/";
+    @Value("${application.qr-code.path}")
+    private String IMAGES_DIR;
 
     @GetMapping("/{imageName}")
     public ResponseEntity<byte[]> getImage(@PathVariable String imageName) throws IOException {
-        Path imgPath = Paths.get(IMAGES_DIR + imageName + ".png");
+        Path imgPath = Paths.get(IMAGES_DIR + imageName);
 
         if (!Files.exists(imgPath)) {
             throw new RuntimeException("Image not found");
