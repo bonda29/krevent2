@@ -59,6 +59,7 @@ public class Server {
                 eventHallRepository.save(eventHall);
 
                 var hallSeats = new ArrayList<HallSeat>();
+
                 //wooden front
                 for (int i = 1; i <= 4; i++) {
                     for (int j = 1; j <= 20; j++) {
@@ -74,18 +75,15 @@ public class Server {
 
                 //regular
                 for (int i = 1; i <= 13; i++) {
-                    for (int j = 1; j <= 20; j++) {
-                        if (i % 2 == 0 && j == 20)
-                            continue;
-                        else {
-                            hallSeats.add(HallSeat.builder()
-                                    .row(String.valueOf(i))
-                                    .seat(j)
-                                    .type(REGULAR_FRONT)
-                                    .price(REGULAR_FRONT.getPrice())
-                                    .eventHall(eventHall)
-                                    .build());
-                        }
+                    int seats = (i % 2 == 1) ? 20 : 19;
+                    for (int j = 1; j <= seats; j++) {
+                        hallSeats.add(HallSeat.builder()
+                                .row(String.valueOf(i))
+                                .seat(j)
+                                .type(REGULAR_FRONT)
+                                .price(REGULAR_FRONT.getPrice())
+                                .eventHall(eventHall)
+                                .build());
                     }
                 }
                 //regular 14th row
@@ -112,18 +110,15 @@ public class Server {
                 }
                 //balcony
                 for (int i = 2; i <= 5; i++) {
-                    for (int j = 1; j <= 20; j++) {
-                        if (i % 2 == 1 && j == 20)
-                            continue;
-                        else {
-                            hallSeats.add(HallSeat.builder()
-                                    .row(String.valueOf(i))
-                                    .seat(j)
-                                    .type(BALCONY_FRONT)
-                                    .price(BALCONY_FRONT.getPrice())
-                                    .eventHall(eventHall)
-                                    .build());
-                        }
+                    int seats = (i % 2 == 0) ? 20 : 19;
+                    for (int j = 1; j <= seats; j++) {
+                        hallSeats.add(HallSeat.builder()
+                                .row(String.valueOf(i))
+                                .seat(j)
+                                .type(BALCONY_FRONT)
+                                .price(BALCONY_FRONT.getPrice())
+                                .eventHall(eventHall)
+                                .build());
                     }
                 }
                 //balcony 6Ath row

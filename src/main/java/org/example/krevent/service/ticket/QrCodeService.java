@@ -18,10 +18,10 @@ public class QrCodeService {
     public String createQrCode(String imageName, String text) throws IOException {
         QrCode qr = QrCode.encodeText(text, LOW);                                               // Make the QR Code symbol
         BufferedImage img = toImage(qr);                                                        // Convert to bitmap image
-        File imgFile = new File("src/main/resources/static/" + imageName + ".png");   // Filepath for output
+        File imgFile = new File("src/main/resources/images/" + imageName + ".png");   // Filepath for output
         ImageIO.write(img, "png", imgFile);                                         // Write image to file
 
-        return "http://localhost:8080/" + imageName + ".png";
+        return "http://localhost:8080/api/v1/images/" + imageName + ".png";
     }
 
 }
