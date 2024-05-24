@@ -15,12 +15,9 @@ import org.example.krevent.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.example.krevent.models.enums.TransactionStatus.FINISHED;
 
@@ -93,7 +90,7 @@ public class GetTicketService {
         // Prepare email data
         EmailDto emailData = new EmailDto();
         emailData.setTo(user.getEmail());
-        emailData.setSubject("Tickets for cinderella play");
+        emailData.setSubject("Потвърждение за онлайн покупка на билет");
         emailData.setName(user.getFirstName() + " " + user.getLastName());
         emailData.setNumberOfTickets(tickets.size());
         emailData.setPrice(tickets.stream().mapToDouble(Ticket::getPrice).sum());
@@ -105,6 +102,8 @@ public class GetTicketService {
 
     private BufferedImage generateTicketImage(User user, Ticket ticket) {
         HallSeat hallSeat = ticket.getHallSeat();
+
+        String name = user.getFirstName() + " " + user.getLastName();
         String type;
         if (hallSeat.getType().toString().contains("BALCONY")) {
             type = "BALCONY";
@@ -113,8 +112,12 @@ public class GetTicketService {
         }
         String seat = "row " + hallSeat.getRow() + " seat " + hallSeat.getSeat();
 
-        return ticketImageGenerator.generateTicketImage(user.getFirstName() + user.getLastName(), type, ticket.getPrice(), seat, ticket.getQrCodeImage());
+        return ticketImageGenerator.generateTicketImage(
+                name,
+                type,
+                ticket.getPrice(),
+                seat,
+                ticket.getQrCodeImage());
     }
-
 
 }

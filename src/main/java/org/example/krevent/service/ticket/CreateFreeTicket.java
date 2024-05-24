@@ -56,7 +56,7 @@ public class CreateFreeTicket {
         }
         String seat = "row " + hallSeat.getRow() + " seat " + hallSeat.getSeat();
 
-        return ticketImageGenerator.generateTicketImage(name, type, 0.0, seat, qrCodeUrl);
+        return ticketImageGenerator.generateTicketImageFromTemplate(name, type, 0.0, seat, qrCodeUrl);
     }
 
     private String generateQRCode(String name, HallSeat hallSeat) {

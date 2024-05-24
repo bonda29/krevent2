@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.util.Objects;
 
 public class QrCodeUtil {
-    private final static int imageSize = 500;
+    private final static int imageSize = 325;//todo: change to 500
 
     public static BufferedImage toImage(QrCode qr) {
         return toImage(qr, 10, 4, 0xFFFFFF, 0x000000);
