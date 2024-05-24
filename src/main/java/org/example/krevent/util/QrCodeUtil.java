@@ -2,15 +2,13 @@ package org.example.krevent.util;
 
 import io.nayuki.qrcodegen.QrCode;
 
-import javax.imageio.ImageIO;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
-import static io.nayuki.qrcodegen.QrCode.Ecc.LOW;
-
 public class QrCodeUtil {
+    private final static int imageSize = 500;
+
     public static BufferedImage toImage(QrCode qr) {
         return toImage(qr, 10, 4, 0xFFFFFF, 0x000000);
     }
@@ -29,7 +27,17 @@ public class QrCodeUtil {
                 result.setRGB(x, y, color ? darkColor : lightColor);
             }
         }
-        return result;
+        return resizeImage(result);
     }
 
+    private static BufferedImage resizeImage(BufferedImage originalImage) {
+        Image tmp = originalImage.getScaledInstance(imageSize, imageSize, Image.SCALE_SMOOTH);
+        BufferedImage resizedImage = new BufferedImage(imageSize, imageSize, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = resizedImage.createGraphics();
+        g2d.drawImage(tmp, 0, 0, null);
+        g2d.dispose();
+
+        return resizedImage;
+    }
 }

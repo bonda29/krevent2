@@ -12,8 +12,8 @@ import org.example.krevent.models.abstracts.BaseEntity;
 @AllArgsConstructor
 @Table(name = "tickets")
 public class Ticket extends BaseEntity {
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne()
+    @JoinColumn(name = "user_id")
     private User user;
 
     @OneToOne(mappedBy = "ticket", optional = false, orphanRemoval = true)
@@ -27,6 +27,7 @@ public class Ticket extends BaseEntity {
 
     @PrePersist
     protected void onCreate() {
-        this.price = this.hallSeat.getPrice();
+        if (this.price < 0)
+            this.price = this.hallSeat.getPrice();
     }
 }

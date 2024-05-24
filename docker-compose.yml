@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   phpmyadmin:
-    container_name: phpmyadmin
+    container_name: local-phpmyadmin
     image: phpmyadmin/phpmyadmin
     environment:
       PMA_HOST: mysql

@@ -18,6 +18,8 @@ import static org.example.krevent.util.QrCodeUtil.toImage;
 public class QrCodeService {
     @Value("${application.qr-code.path}")
     private String qrCodePath;
+    @Value("${application.url.base}")
+    private String baseUrl;
 
     public String createQrCode(String imageName, String text) throws IOException {
         QrCode qr = QrCode.encodeText(text, LOW);                                               // Make the QR Code symbol
@@ -25,7 +27,7 @@ public class QrCodeService {
         File imgFile = new File(qrCodePath + imageName + ".png");   // Filepath for output
         ImageIO.write(img, "png", imgFile);                                         // Write image to file
 
-        return "http://localhost:8080/qr-codes/" + imageName + ".png";
+        return baseUrl + "qr-codes/" + imageName + ".png";
     }
 
 }

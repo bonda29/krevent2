@@ -38,6 +38,9 @@ public class PurchaseTicketService {
     @Value("${stripe.price15}")
     private String price15;
 
+    @Value("${application.url.base}")
+    private String baseUrl;
+
     public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
         User user = findById(userRepository, data.getUserId());
         Set<HallSeat> hallSeats = data.getHallSeatIds().stream()
@@ -51,8 +54,7 @@ public class PurchaseTicketService {
         for (HallSeat seat : hallSeats) {
             if (seat.isBooked()) {
                 throw new HallSeatBookedException("Seat is already booked");
-            }
-            if (seat.getPrice() == 10) {
+            } else if (seat.getPrice() == 10) {
                 number10++;
             } else if (seat.getPrice() == 15) {
                 number15++;
@@ -95,8 +97,8 @@ public class PurchaseTicketService {
                     .setCustomer(customerId)
                     .addAllLineItem(lineItems)
                     .setMode(PAYMENT)
-                    .setSuccessUrl("http://localhost:8080/api/v1/tickets/success?sessionId=" + sessionId)
-                    .setCancelUrl("http://localhost:8080/api/v1/tickets/cancel?sessionId=" + sessionId)
+                    .setSuccessUrl(baseUrl + "api/v1/tickets/success?sessionId=" + sessionId)
+                    .setCancelUrl(baseUrl + "api/v1/tickets/cancel?sessionId=" + sessionId)
                     .build();
             Session session = Session.create(params);
 
