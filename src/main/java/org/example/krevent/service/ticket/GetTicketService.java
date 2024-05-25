@@ -106,13 +106,13 @@ public class GetTicketService {
         String name = user.getFirstName() + " " + user.getLastName();
         String type;
         if (hallSeat.getType().toString().contains("BALCONY")) {
-            type = "BALCONY";
+            type = "Балкон";
         } else {
-            type = "REGULAR";
+            type = "Нормален";
         }
-        String seat = "row " + hallSeat.getRow() + " seat " + hallSeat.getSeat();
+        String seat = "Р" + hallSeat.getRow() + " М" + hallSeat.getSeat();
 
-        return ticketImageGenerator.generateTicketImage(
+        return ticketImageGenerator.generateTicketImageFromTemplate(
                 name,
                 type,
                 ticket.getPrice(),

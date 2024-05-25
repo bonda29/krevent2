@@ -70,13 +70,13 @@ public class TicketImageGenerator {
 
             // Draw the name and type
             g.drawString(name, 930, 82 + fontSize);
-            g.drawString(price.toString(), 975, 82+50+35 + fontSize);
-            g.drawString("19:00", 910, 82+50+35+50+35 + fontSize);
+            g.drawString(price.toString(), 975, 82 + 50 + 35 + fontSize);
+            g.drawString("19:00", 910, 82 + 50 + 35 + 50 + 35 + fontSize);
 
-            Font smallFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/Montserrat-Black.ttf"));
+            Font smallFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/Montserrat-Light.ttf"));
             g.setFont(smallFont.deriveFont(30f));
-            g.setColor(new Color(31, 30,34));
-            g.drawString(seat, 210, 434 + 30);
+            g.setColor(new Color(31, 30, 34));
+            g.drawString(type + "/" + seat, 210, 434 + 20);
 
             g.dispose();
 
