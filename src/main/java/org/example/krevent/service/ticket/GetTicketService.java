@@ -3,7 +3,6 @@ package org.example.krevent.service.ticket;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
-import org.example.krevent.mapper.TicketMapper;
 import org.example.krevent.models.Guest;
 import org.example.krevent.models.HallSeat;
 import org.example.krevent.models.Ticket;
@@ -14,8 +13,10 @@ import org.example.krevent.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.*;
@@ -35,6 +36,18 @@ public class GetTicketService {
     @Transactional
     public BufferedImage getTickets(String sessionId) {
         var transaction = transactionRepository.findBySessionId(sessionId);
+
+        if (transaction.getStatus() == FINISHED) {
+            File inputFile = new File("src/main/resources/static/tickets/" + sessionId + ".png");
+            BufferedImage image;
+            try {
+                image = ImageIO.read(inputFile);
+            } catch (IOException e) {
+                throw new RuntimeException("Error while reading image", e);
+            }
+            return image;
+        }
+
         List<Ticket> tickets = new ArrayList<>();
         List<HallSeat> updatedHallSeats = new ArrayList<>();
         List<BufferedImage> ticketImages = new ArrayList<>();
@@ -55,7 +68,17 @@ public class GetTicketService {
 
         sendEmailToUser(transaction.getGuest(), tickets, ticketImages);
 
-        return combineImages(ticketImages, 10);
+        BufferedImage image = combineImages(ticketImages, 10);
+
+        // Save the image to a file
+        File outputFile = new File("src/main/resources/static/tickets/" + sessionId + ".png");
+        try {
+            ImageIO.write(image, "PNG", outputFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Error while saving image", e);
+        }
+
+        return image;
     }
 
 
