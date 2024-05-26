@@ -48,15 +48,9 @@ public class CreateFreeTicket {
 
         hallSeatRepository.save(hallSeat);
 
-        String type;
-        if (hallSeat.getType().toString().contains("BALCONY")) {
-            type = "Балкон";
-        } else {
-            type = "Нормален";
-        }
         String seat = "Р" + hallSeat.getRow() + " М" + hallSeat.getSeat();
 
-        return ticketImageGenerator.generateTicketImageFromTemplate(name, type, 0.0, seat, qrCodeUrl);
+        return ticketImageGenerator.generateTicketImageFromTemplate(name, hallSeat.getType(), 0.0, seat, qrCodeUrl);
     }
 
     private String generateQRCode(String name, HallSeat hallSeat) {
