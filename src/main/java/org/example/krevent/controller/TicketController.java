@@ -45,7 +45,20 @@ public class TicketController {
     }
 
     @GetMapping("/success")
-    public ResponseEntity<?> getTickets(@RequestParam String sessionId) {
-        return ResponseEntity.ok(getTicketService.getTickets(sessionId));
+    public void getTickets(@RequestParam String sessionId, HttpServletResponse response) {
+        var image = getTicketService.getTickets(sessionId);
+
+        try {
+            // Set the response type to image/png
+            response.setContentType("image/png");
+
+            // Write the image to the response output stream
+            ImageIO.write(image, "PNG", response.getOutputStream());
+
+            // Flush the output stream to send the data to the client
+            response.getOutputStream().flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

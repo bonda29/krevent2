@@ -7,17 +7,17 @@ import org.example.krevent.mapper.TicketMapper;
 import org.example.krevent.models.Guest;
 import org.example.krevent.models.HallSeat;
 import org.example.krevent.models.Ticket;
-import org.example.krevent.models.User;
 import org.example.krevent.payload.dto.EmailDto;
-import org.example.krevent.payload.dto.TicketDto;
 import org.example.krevent.repository.HallSeatRepository;
 import org.example.krevent.repository.TicketRepository;
 import org.example.krevent.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.List;
 import java.util.*;
 
 import static org.example.krevent.models.enums.TransactionStatus.FINISHED;
@@ -31,11 +31,9 @@ public class GetTicketService {
     private final TicketRepository ticketRepository;
     private final QrCodeService qrCodeService;
     private final EmailService emailService;
-    private final TicketMapper ticketMapper;
-
 
     @Transactional
-    public List<TicketDto> getTickets(String sessionId) {
+    public BufferedImage getTickets(String sessionId) {
         var transaction = transactionRepository.findBySessionId(sessionId);
         List<Ticket> tickets = new ArrayList<>();
         List<HallSeat> updatedHallSeats = new ArrayList<>();
@@ -56,7 +54,8 @@ public class GetTicketService {
         transaction.setStatus(FINISHED);
 
         sendEmailToUser(transaction.getGuest(), tickets, ticketImages);
-        return ticketMapper.toDto(tickets);
+
+        return combineImages(ticketImages, 10);
     }
 
 
@@ -121,4 +120,27 @@ public class GetTicketService {
                 ticket.getQrCodeImage());
     }
 
+    public BufferedImage combineImages(List<BufferedImage> images, int gap) {
+        int totalHeight = -gap;
+        int maxWidth = 0;
+        for (BufferedImage image : images) {
+            totalHeight += image.getHeight() + gap;
+            maxWidth = Math.max(maxWidth, image.getWidth());
+        }
+
+        // Create a new image
+        BufferedImage combined = new BufferedImage(maxWidth, totalHeight, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = combined.createGraphics();
+
+        // Draw each image onto the new image
+        int y = 0;
+        for (BufferedImage image : images) {
+            g.drawImage(image, null, 0, y);
+            y += image.getHeight() + gap;
+        }
+
+        g.dispose();
+
+        return combined;
+    }
 }
