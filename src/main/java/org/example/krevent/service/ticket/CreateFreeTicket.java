@@ -35,7 +35,7 @@ public class CreateFreeTicket {
         var qrCodeUrl = generateQRCode(name, hallSeat);
 
         var ticket = Ticket.builder()
-                .user(null)
+                .guest(null)
                 .hallSeat(hallSeat)
                 .price(0)
                 .qrCodeImage(qrCodeUrl)

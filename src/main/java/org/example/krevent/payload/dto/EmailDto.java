@@ -1,7 +1,6 @@
 package org.example.krevent.payload.dto;
 
 import lombok.Data;
-import lombok.Value;
 
 import java.awt.image.BufferedImage;
 import java.util.List;

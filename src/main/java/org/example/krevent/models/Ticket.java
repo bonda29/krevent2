@@ -13,8 +13,8 @@ import org.example.krevent.models.abstracts.BaseEntity;
 @Table(name = "tickets")
 public class Ticket extends BaseEntity {
     @ManyToOne()
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "guest_id", nullable = false)
+    private Guest guest;
 
     @OneToOne(mappedBy = "ticket", optional = false, orphanRemoval = true)
     private HallSeat hallSeat;

@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.RequiredArgsConstructor;
 import org.example.krevent.mapper.TicketMapper;
+import org.example.krevent.models.Guest;
 import org.example.krevent.models.HallSeat;
 import org.example.krevent.models.Ticket;
 import org.example.krevent.models.User;
@@ -41,28 +42,28 @@ public class GetTicketService {
         List<BufferedImage> ticketImages = new ArrayList<>();
 
         for (HallSeat hallSeat : transaction.getHallSeats()) {
-            var ticket = createTicket(transaction.getUser(), hallSeat);
+            var ticket = createTicket(transaction.getGuest(), hallSeat);
 
             hallSeat.setBooked(true);
             hallSeat.setTicket(ticket);
             updatedHallSeats.add(hallSeat);
 
             tickets.add(ticket);
-            ticketImages.add(generateTicketImage(transaction.getUser(), ticket));
+            ticketImages.add(generateTicketImage(transaction.getGuest(), ticket));
         }
 
         hallSeatRepository.saveAll(updatedHallSeats);
         transaction.setStatus(FINISHED);
 
-        sendEmailToUser(transaction.getUser(), tickets, ticketImages);
+        sendEmailToUser(transaction.getGuest(), tickets, ticketImages);
         return ticketMapper.toDto(tickets);
     }
 
 
-    private Ticket createTicket(User user, HallSeat hallSeat) {
+    private Ticket createTicket(Guest guest, HallSeat hallSeat) {
         Map<String, Object> ticketData = new LinkedHashMap<>();
-        ticketData.put("name", user.getFirstName() + " " + user.getLastName());
-        ticketData.put("email", user.getEmail());
+        ticketData.put("name", guest.getFirstName() + " " + guest.getLastName());
+        ticketData.put("email", guest.getEmail());
         ticketData.put("type", hallSeat.getType());
         ticketData.put("seat", "row " + hallSeat.getRow() + " seat " + hallSeat.getSeat());
         ticketData.put("price", hallSeat.getPrice());
@@ -77,7 +78,7 @@ public class GetTicketService {
         }
 
         Ticket ticket = Ticket.builder()
-                .user(user)
+                .guest(guest)
                 .hallSeat(hallSeat)
                 .price(hallSeat.getPrice())
                 .qrCodeImage(qrCodeUrl)
@@ -86,12 +87,12 @@ public class GetTicketService {
         return ticketRepository.save(ticket);
     }
 
-    private void sendEmailToUser(User user, List<Ticket> tickets, List<BufferedImage> ticketImages) {
+    private void sendEmailToUser(Guest guest, List<Ticket> tickets, List<BufferedImage> ticketImages) {
         // Prepare email data
         EmailDto emailData = new EmailDto();
-        emailData.setTo(user.getEmail());
+        emailData.setTo(guest.getEmail());
         emailData.setSubject("Потвърждение за онлайн покупка на билет");
-        emailData.setName(user.getFirstName() + " " + user.getLastName());
+        emailData.setName(guest.getFirstName() + " " + guest.getLastName());
         emailData.setNumberOfTickets(tickets.size());
         emailData.setPrice(tickets.stream().mapToDouble(Ticket::getPrice).sum());
         emailData.setTickets(ticketImages);
@@ -100,10 +101,10 @@ public class GetTicketService {
         emailService.sendEmail(emailData);
     }
 
-    private BufferedImage generateTicketImage(User user, Ticket ticket) {
+    private BufferedImage generateTicketImage(Guest guest, Ticket ticket) {
         HallSeat hallSeat = ticket.getHallSeat();
 
-        String name = user.getFirstName() + " " + user.getLastName();
+        String name = guest.getFirstName() + " " + guest.getLastName();
         String type;
         if (hallSeat.getType().toString().contains("BALCONY")) {
             type = "Балкон";

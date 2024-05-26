@@ -54,7 +54,7 @@ public class Server {
                 var eventHall = EventHall.builder()
                         .name("Синдикален дом на културата")
                         .description("Синдикален дом на културата на транспортните работници в България-София")
-                        .capacity(469)
+                        .capacity(457)
                         .build();
                 eventHallRepository.save(eventHall);
 
@@ -66,8 +66,8 @@ public class Server {
                         hallSeats.add(HallSeat.builder()
                                 .row(i + "A")
                                 .seat(j)
-                                .type(WOODEN_FRONT)
-                                .price(WOODEN_FRONT.getPrice())
+                                .type(REGULAR_WOODEN)
+                                .price(REGULAR_WOODEN.getPrice())
                                 .eventHall(eventHall)
                                 .build());
                     }
@@ -80,8 +80,8 @@ public class Server {
                         hallSeats.add(HallSeat.builder()
                                 .row(String.valueOf(i))
                                 .seat(j)
-                                .type(REGULAR_FRONT)
-                                .price(REGULAR_FRONT.getPrice())
+                                .type(REGULAR)
+                                .price(REGULAR.getPrice())
                                 .eventHall(eventHall)
                                 .build());
                     }
@@ -91,8 +91,8 @@ public class Server {
                     hallSeats.add(HallSeat.builder()
                             .row("14")
                             .seat(i)
-                            .type(REGULAR_FRONT)
-                            .price(REGULAR_FRONT.getPrice())
+                            .type(REGULAR)
+                            .price(REGULAR.getPrice())
                             .eventHall(eventHall)
                             .build());
                 }
@@ -103,8 +103,8 @@ public class Server {
                     hallSeats.add(HallSeat.builder()
                             .row("1")
                             .seat(i)
-                            .type(BALCONY_FRONT)
-                            .price(BALCONY_FRONT.getPrice())
+                            .type(BALCONY)
+                            .price(BALCONY.getPrice())
                             .eventHall(eventHall)
                             .build());
                 }
@@ -115,8 +115,8 @@ public class Server {
                         hallSeats.add(HallSeat.builder()
                                 .row(String.valueOf(i))
                                 .seat(j)
-                                .type(BALCONY_FRONT)
-                                .price(BALCONY_FRONT.getPrice())
+                                .type(BALCONY)
+                                .price(BALCONY.getPrice())
                                 .eventHall(eventHall)
                                 .build());
                     }
@@ -126,8 +126,8 @@ public class Server {
                     hallSeats.add(HallSeat.builder()
                             .row("6A")
                             .seat(i)
-                            .type(BALCONY_WOODEN_BACK)
-                            .price(BALCONY_WOODEN_BACK.getPrice())
+                            .type(BALCONY_WOODEN)
+                            .price(BALCONY_WOODEN.getPrice())
                             .eventHall(eventHall)
                             .build());
                 }

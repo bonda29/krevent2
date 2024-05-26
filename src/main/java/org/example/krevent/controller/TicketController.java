@@ -23,7 +23,7 @@ public class TicketController {
 
     @PostMapping("/purchase")
     public ResponseEntity<?> purchaseTicket(@RequestBody TicketPurchaseRequest data) {
-        return ResponseEntity.ok(purchaseTicketService.purchaseTicket(data));
+        return ResponseEntity.ok(purchaseTicketService.purchaseTicketForGuest(data));
     }
 
     @PostMapping("/free")

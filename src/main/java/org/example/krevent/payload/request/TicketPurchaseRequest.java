@@ -7,8 +7,14 @@ import java.util.List;
 
 @Value
 public class TicketPurchaseRequest {
-    @JsonProperty("user_id")
-    Long userId;
+    @JsonProperty("first_name")
+    String firstName;
+
+    @JsonProperty("last_name")
+    String lastName;
+
+    @JsonProperty("email")
+    String email;
 
     @JsonProperty("hall_seat_ids")
     List<Long> hallSeatIds;

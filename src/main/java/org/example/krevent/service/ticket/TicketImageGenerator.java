@@ -66,7 +66,7 @@ public class TicketImageGenerator {
             Font bigFont = Font.createFont(Font.TRUETYPE_FONT, new File("src/main/resources/fonts/Montserrat-Black.ttf"));
             float fontSize = 50;
             g.setFont(bigFont.deriveFont(fontSize));
-            g.setColor(new Color(248, 212, 64));
+            g.setColor(new Color(56, 182, 255));
 
             // Draw the name and type
             g.drawString(name, 930, 82 + fontSize);

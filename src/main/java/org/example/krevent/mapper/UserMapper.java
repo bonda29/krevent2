@@ -15,15 +15,6 @@ public class UserMapper {
 
     public UserMapper() {
         modelMapper = new ModelMapper();
-        modelMapper.addMappings(new PropertyMap<User, UserDto>() {
-            @Override
-            protected void configure() {
-                if (source.getTickets() != null)
-                    map().setTicketIds(source.getTickets().stream()
-                            .map(BaseEntity::getId)
-                            .collect(Collectors.toSet()));
-            }
-        });
     }
 
     public UserDto toDto(User entity) {

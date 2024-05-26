@@ -19,8 +19,8 @@ import java.util.UUID;
 @Table(name = "transactions")
 public class Transaction extends BaseEntity {
     @ManyToOne(optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @JoinColumn(name = "guest_id", nullable = false)
+    private Guest guest;
 
     @OneToMany(orphanRemoval = true)
     private Set<HallSeat> hallSeats = new LinkedHashSet<>();

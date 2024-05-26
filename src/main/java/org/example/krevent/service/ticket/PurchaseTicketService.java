@@ -5,13 +5,13 @@ import com.stripe.param.checkout.SessionCreateParams;
 import com.stripe.param.checkout.SessionCreateParams.LineItem;
 import lombok.RequiredArgsConstructor;
 import org.example.krevent.exception.HallSeatBookedException;
+import org.example.krevent.models.Guest;
 import org.example.krevent.models.HallSeat;
 import org.example.krevent.models.Transaction;
-import org.example.krevent.models.User;
 import org.example.krevent.payload.request.TicketPurchaseRequest;
+import org.example.krevent.repository.GuestRepository;
 import org.example.krevent.repository.HallSeatRepository;
 import org.example.krevent.repository.TransactionRepository;
-import org.example.krevent.repository.UserRepository;
 import org.example.krevent.service.StripeService;
 import org.example.krevent.util.DateUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +29,7 @@ import static org.example.krevent.util.RepositoryUtil.findById;
 public class PurchaseTicketService {
     private final TransactionRepository transactionRepository;
     private final HallSeatRepository hallSeatRepository;
-    private final UserRepository userRepository;
+    private final GuestRepository guestRepository;
     private final StripeService stripeService;
 
     @Value("${stripe.price10}")
@@ -41,14 +41,58 @@ public class PurchaseTicketService {
     @Value("${application.url.base}")
     private String baseUrl;
 
-    public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
-        User user = findById(userRepository, data.getUserId());
+    /*
+        public Map<String, Object> purchaseTicket(TicketPurchaseRequest data) {
+            User user = findById(userRepository, data.getUserId());
+            Set<HallSeat> hallSeats = data.getHallSeatIds().stream()
+                    .map(id -> findById(hallSeatRepository, id))
+                    .collect(toSet());
+
+            var customer = stripeService.getOrCreateCustomer(user.getEmail(),
+                    user.getFirstName() + " " + user.getLastName());
+
+            long number10 = 0, number15 = 0;
+            for (HallSeat seat : hallSeats) {
+                if (seat.isBooked()) {
+                    throw new HallSeatBookedException("Seat is already booked");
+                } else if (seat.getPrice() == 10) {
+                    number10++;
+                } else if (seat.getPrice() == 15) {
+                    number15++;
+                }
+            }
+
+            String sessionId = UUID.randomUUID().toString();
+            Transaction transaction = Transaction.builder()
+                    .user(user)
+                    .hallSeats(hallSeats)
+                    .sessionId(sessionId)
+                    .status(PENDING)
+                    .timeOfCreation(DateUtil.now())
+                    .build();
+
+            transactionRepository.save(transaction);
+
+            String paymentUrl = getPaymentUrl(customer.getId(), number10, number15, sessionId);
+
+            return Map.of("url", paymentUrl);
+        }
+    */
+    public Map<String, Object> purchaseTicketForGuest(TicketPurchaseRequest data) {
+        Guest guest = Guest.builder()
+                .firstName(data.getFirstName())
+                .lastName(data.getLastName())
+                .email(data.getEmail())
+                .build();
+
+        guestRepository.save(guest);
+
         Set<HallSeat> hallSeats = data.getHallSeatIds().stream()
                 .map(id -> findById(hallSeatRepository, id))
                 .collect(toSet());
 
-        var customer = stripeService.getOrCreateCustomer(user.getEmail(),
-                user.getFirstName() + " " + user.getLastName());
+        var customer = stripeService.getOrCreateCustomer(guest.getEmail(),
+                guest.getFirstName() + " " + guest.getLastName());
 
         long number10 = 0, number15 = 0;
         for (HallSeat seat : hallSeats) {
@@ -63,7 +107,7 @@ public class PurchaseTicketService {
 
         String sessionId = UUID.randomUUID().toString();
         Transaction transaction = Transaction.builder()
-                .user(user)
+                .guest(guest)
                 .hallSeats(hallSeats)
                 .sessionId(sessionId)
                 .status(PENDING)

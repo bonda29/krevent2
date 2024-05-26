@@ -19,7 +19,7 @@ public class TicketMapper {
         modelMapper.addMappings(new PropertyMap<Ticket, TicketDto>() {
             @Override
             protected void configure() {
-                map().setUserId(source.getUser().getId());
+                map().setUserId(source.getGuest().getId());
                 map().setHallSeatId(source.getHallSeat().getId());
             }
         });
