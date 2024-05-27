@@ -12,7 +12,9 @@ import org.example.krevent.repository.EventHallRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.example.krevent.util.RepositoryUtil.findById;
 
@@ -47,7 +49,11 @@ public class EventHallService {
 
     public List<HallSeatDto> getHallSeats(Long id) {
         EventHall eventHall = findById(eventHallRepository, id);
-        return hallSeatMapper.toDto(eventHall.getHallSeats());
+
+        return hallSeatMapper.toDto(eventHall.getHallSeats())
+                .stream()
+                .sorted(Comparator.comparingLong(HallSeatDto::getId))
+                .collect(Collectors.toList());
     }
 
     @Transactional
